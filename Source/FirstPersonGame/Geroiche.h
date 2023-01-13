@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Orujie.h"
 #include "GameFramework/Character.h"
 #include "Geroiche.generated.h"
+
 
 UCLASS()
 class FIRSTPERSONGAME_API AGeroiche : public ACharacter
@@ -48,6 +50,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector GunOffset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+		 AOrujie* Weapon;
+	
+
 protected:
 	void OnFire();
 
@@ -63,13 +69,27 @@ protected:
 	void TurnAtRate(float Rate);
 	void LookAtRate(float Rate);
 
-public:
+	void ReloadWeapon();
 	
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
+		void TriggerOutOfAmmoPopUp();
+
+	
+
+
+public:
+
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AProjectile> Projectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		class USoundBase* FireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class USoundBase* EmptyMagazineSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class USoundBase* ReloadSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		class UAnimMontage* FireAnimation;

@@ -57,7 +57,7 @@ void AProtivnik::Tick(float DeltaTime)
 	if (!CurrentVelocity.IsZero())
 	{
 
-		NewLocation = GetActorLocation() = CurrentVelocity * DeltaTime;
+		NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
 
 		if (BackToBaseLocation)
 		{
@@ -95,6 +95,9 @@ void AProtivnik::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 {
 }
 
+
+
+
 void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 {
 
@@ -113,10 +116,11 @@ void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 
 			SetNewRotation(UpdatedActors[i]->GetActorLocation(), GetActorLocation());
 
-
 		}
-		else 
+		else
 		{
+			
+
 			FVector dir = BaseLocation - GetActorLocation();
 			dir.Z = 0.0f;
 			if (dir.SizeSquared2D() > 1.0f)
@@ -131,6 +135,8 @@ void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 
 	}
 }
+
+
 
 void AProtivnik::SetNewRotation(FVector TargetPosition, FVector CurrentPosition)
 {

@@ -9,7 +9,7 @@
 #include "Projectile.h"
 #include "Animation/AnimInstance.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "HeadMountedDisplayFunctionLibrary.h"
 #include "GameModeDiplomna.h"
 #include "TimerManager.h"
 
@@ -48,6 +48,7 @@ AGeroiche::AGeroiche()
 	MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
+	Weapon = nullptr;
 
 
 
@@ -83,6 +84,7 @@ void AGeroiche::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Slow", IE_Pressed, this, &AGeroiche::SlowTime);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AGeroiche::ReloadWeapon);
 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AGeroiche::OnFire);
 
@@ -97,27 +99,45 @@ void AGeroiche::OnFire()
 
 	if (World != NULL) {
 
-		SpawnRotation = GetControlRotation();
+		if (Weapon) {
+			if (Weapon->clipAmmo > 0) {
+				SpawnRotation = GetControlRotation();
 
-		SpawnLocation = ((MuzzleLocation != nullptr) ?
-			MuzzleLocation->GetComponentLocation() :
-			GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+				SpawnLocation = ((MuzzleLocation != nullptr) ?
+					MuzzleLocation->GetComponentLocation() :
+					GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
 
-		FActorSpawnParameters ActorSpawnParams;
-		ActorSpawnParams.SpawnCollisionHandlingOverride =
-			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+				FActorSpawnParameters ActorSpawnParams;
+				ActorSpawnParams.SpawnCollisionHandlingOverride =
+					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-		World->SpawnActor<AProjectile>(Projectile,
-			SpawnLocation, SpawnRotation, ActorSpawnParams);
+				World->SpawnActor<AProjectile>(Projectile,
+					SpawnLocation, SpawnRotation, ActorSpawnParams);
 
-		if (FireSound != NULL) {
-			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+				if (FireSound != NULL) {
+					UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 
-		}
+				}
 
-		if (FireAnimation != NULL && AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 0.3f);
+				if (FireAnimation != NULL && AnimInstance != NULL)
+				{
+					AnimInstance->Montage_Play(FireAnimation, 0.3f);
+				}
+
+				Weapon->clipAmmo -= 1;
+			}
+			else if (Weapon->totalAmmo > 0) {
+				if(ReloadSound != NULL){
+					UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+				}
+				ReloadWeapon();
+			}
+			else {
+				if (EmptyMagazineSound != NULL) {
+					UGameplayStatics::PlaySoundAtLocation(this, EmptyMagazineSound, GetActorLocation());
+				}
+				TriggerOutOfAmmoPopUp();
+			}
 		}
 	}
 }
@@ -159,4 +179,23 @@ void AGeroiche::LookAtRate(float Rate)
 {
 	AddControllerPitchInput(Rate * LookUpRate * GetWorld()->GetDeltaSeconds());
 }
+
+void AGeroiche::ReloadWeapon()
+{
+	if (Weapon) {
+
+		if (Weapon->clipAmmo != Weapon->maxClipAmmo) {
+
+			if (Weapon->totalAmmo - (Weapon->maxClipAmmo - Weapon->clipAmmo) >= 0) {
+				Weapon->totalAmmo -= (Weapon->maxClipAmmo - Weapon->clipAmmo);
+				Weapon->clipAmmo = Weapon->maxClipAmmo;
+			}
+			else {
+				Weapon->clipAmmo += Weapon -> totalAmmo;
+				Weapon->totalAmmo = 0;
+			}
+		}
+	}
+}
+
 

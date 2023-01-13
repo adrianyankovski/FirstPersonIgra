@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Protivnik.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class FIRSTPERSONGAME_API AProtivnik : public ACharacter
 {
 	GENERATED_BODY()
@@ -59,6 +59,7 @@ public:
 
 	bool BackToBaseLocation;
 	FVector NewLocation;
+
 	float DistanceSquared;
 
 	UPROPERTY(EditAnywhere, BLueprintReadOnly)
