@@ -48,6 +48,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 		FVector BaseLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+
+		float TimeSinceLastSeen = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Timeout = 5;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 		FVector CurrentVelocity;
@@ -59,6 +64,7 @@ public:
 
 	bool BackToBaseLocation;
 	FVector NewLocation;
+	FVector LastPlayerSeenLocation;
 
 	float DistanceSquared;
 
@@ -70,6 +76,5 @@ public:
 
 public:
 	void DealDamage(float DamageAmount);
-
 
 };

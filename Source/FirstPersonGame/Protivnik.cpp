@@ -49,20 +49,17 @@ void AProtivnik::BeginPlay()
 	BaseLocation = this->GetActorLocation();
 }
 
-// Called every frame
+//Called Every Frame
+
 void AProtivnik::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	if (!CurrentVelocity.IsZero())
 	{
-
 		NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
-
 		if (BackToBaseLocation)
 		{
-
-			if((NewLocation - BaseLocation).SizeSquared2D() < DistanceSquared)
+			if ((NewLocation - BaseLocation).SizeSquared2D() < DistanceSquared)
 			{
 				DistanceSquared = (NewLocation - BaseLocation).SizeSquared2D();
 			}
@@ -76,11 +73,22 @@ void AProtivnik::Tick(float DeltaTime)
 			}
 
 		}
-
+		else
+		{
+			TimeSinceLastSeen += DeltaTime;
+			if (TimeSinceLastSeen > Timeout)
+			{
+				FVector dir = BaseLocation - GetActorLocation();
+				dir.Z = 0.0f;
+				CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
+				BackToBaseLocation = true;
+				DistanceSquared = BIG_NUMBER;
+				TimeSinceLastSeen = 0;
+				SetNewRotation(BaseLocation, GetActorLocation());
+			}
+		}
 		SetActorLocation(NewLocation);
-
 	}
-
 }
 
 // Called to bind functionality to input
@@ -96,11 +104,8 @@ void AProtivnik::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 }
 
 
-
-
 void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 {
-
 	for (int i = 0; i < UpdatedActors.Num(); i++)
 	{
 		FActorPerceptionBlueprintInfo Info;
@@ -109,34 +114,44 @@ void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 
 		if (Info.LastSensedStimuli[0].WasSuccessfullySensed())
 		{
+			LastPlayerSeenLocation = UpdatedActors[i]->GetActorLocation();
 			FVector dir = UpdatedActors[i]->GetActorLocation() - GetActorLocation();
 			dir.Z = 0.0f;
-
 			CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
-
 			SetNewRotation(UpdatedActors[i]->GetActorLocation(), GetActorLocation());
-
+			BackToBaseLocation = false;
 		}
 		else
 		{
-			
-
-			FVector dir = BaseLocation - GetActorLocation();
+			FVector dir = LastPlayerSeenLocation - GetActorLocation();
 			dir.Z = 0.0f;
 			if (dir.SizeSquared2D() > 1.0f)
 			{
 				CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
-				BackToBaseLocation = true;
+				BackToBaseLocation = false;
 
-				SetNewRotation(BaseLocation, GetActorLocation());
+				SetNewRotation(LastPlayerSeenLocation, GetActorLocation());
 			}
+			else
+			{
+				dir = BaseLocation - GetActorLocation();
+				dir.Z = 0.0f;
+				if (dir.SizeSquared2D() > 1.0f)
+				{
+					CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
+					BackToBaseLocation = true;
 
+					SetNewRotation(BaseLocation, GetActorLocation());
+				}
+				else
+				{
+					CurrentVelocity = FVector::ZeroVector;
+					BackToBaseLocation = false;
+				}
+			}
 		}
-
 	}
 }
-
-
 
 void AProtivnik::SetNewRotation(FVector TargetPosition, FVector CurrentPosition)
 {
@@ -155,4 +170,5 @@ void AProtivnik::SetNewRotation(FVector TargetPosition, FVector CurrentPosition)
 void AProtivnik::DealDamage(float DamageAmount)
 {
 }
+
 
