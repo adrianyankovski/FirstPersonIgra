@@ -12,6 +12,7 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "GameModeDiplomna.h"
 #include "TimerManager.h"
+#include "OrujieComponent.h"
 
 
 // Sets default values
@@ -24,6 +25,7 @@ AGeroiche::AGeroiche()
 	TurnRate = 45.0f;
 	LookUpRate = 45.0f;
 
+	WeaponComponent = CreateDefaultSubobject<UOrujieComponent>(TEXT("Weapon Data"));
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("First Person Camera"));
 	FirstPersonCamera->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCamera->AddRelativeLocation(FVector(-39.65f, 1.75f, 64.0f));
@@ -48,9 +50,7 @@ AGeroiche::AGeroiche()
 	MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
-	Weapon = nullptr;
-
-
+	
 
 }
 
@@ -84,7 +84,7 @@ void AGeroiche::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Slow", IE_Pressed, this, &AGeroiche::SlowTime);
-	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AGeroiche::ReloadWeapon);
+	PlayerInputComponent->BindAction("ReloadWeapon", IE_Pressed, this, &AGeroiche::ReloadWeapon);
 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AGeroiche::OnFire);
 
@@ -98,45 +98,40 @@ void AGeroiche::OnFire()
 {
 
 	if (World != NULL) {
+		if (Wait) {
+			if (WeaponComponent) {
+				if (WeaponComponent->clipAmmo > 0) {
+					SpawnRotation = GetControlRotation();
 
-		if (Weapon) {
-			if (Weapon->clipAmmo > 0) {
-				SpawnRotation = GetControlRotation();
+					SpawnLocation = ((MuzzleLocation != nullptr) ?
+						MuzzleLocation->GetComponentLocation() :
+						GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
 
-				SpawnLocation = ((MuzzleLocation != nullptr) ?
-					MuzzleLocation->GetComponentLocation() :
-					GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+					FActorSpawnParameters ActorSpawnParams;
+					ActorSpawnParams.SpawnCollisionHandlingOverride =
+						ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride =
-					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+					World->SpawnActor<AProjectile>(Projectile,
+						SpawnLocation, SpawnRotation, ActorSpawnParams);
 
-				World->SpawnActor<AProjectile>(Projectile,
-					SpawnLocation, SpawnRotation, ActorSpawnParams);
+					if (FireSound != NULL) {
+						UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 
-				if (FireSound != NULL) {
-					UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+					}
 
+					if (FireAnimation != NULL && AnimInstance != NULL)
+					{
+						AnimInstance->Montage_Play(FireAnimation, 0.3f);
+					}
+
+					WeaponComponent->clipAmmo -= 1;
 				}
-
-				if (FireAnimation != NULL && AnimInstance != NULL)
-				{
-					AnimInstance->Montage_Play(FireAnimation, 0.3f);
+				else {
+					if (EmptyMagazineSound != NULL) {
+						UGameplayStatics::PlaySoundAtLocation(this, EmptyMagazineSound, GetActorLocation());
+					}
+					TriggerOutOfAmmoPopUp();
 				}
-
-				Weapon->clipAmmo -= 1;
-			}
-			else if (Weapon->totalAmmo > 0) {
-				if(ReloadSound != NULL){
-					UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
-				}
-				ReloadWeapon();
-			}
-			else {
-				if (EmptyMagazineSound != NULL) {
-					UGameplayStatics::PlaySoundAtLocation(this, EmptyMagazineSound, GetActorLocation());
-				}
-				TriggerOutOfAmmoPopUp();
 			}
 		}
 	}
@@ -182,20 +177,34 @@ void AGeroiche::LookAtRate(float Rate)
 
 void AGeroiche::ReloadWeapon()
 {
-	if (Weapon) {
+	if (WeaponComponent) {
 
-		if (Weapon->clipAmmo != Weapon->maxClipAmmo) {
+		if (WeaponComponent->clipAmmo != WeaponComponent->maxClipAmmo) {
 
-			if (Weapon->totalAmmo - (Weapon->maxClipAmmo - Weapon->clipAmmo) >= 0) {
-				Weapon->totalAmmo -= (Weapon->maxClipAmmo - Weapon->clipAmmo);
-				Weapon->clipAmmo = Weapon->maxClipAmmo;
+			if (WeaponComponent->totalAmmo - (WeaponComponent->maxClipAmmo - WeaponComponent->clipAmmo) >= 0) {
+				Wait = false;
+				GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AGeroiche::True, WeaponComponent->reloadTime, false);
+				WeaponComponent->totalAmmo -= (WeaponComponent->maxClipAmmo - WeaponComponent->clipAmmo);
+				WeaponComponent->clipAmmo = WeaponComponent->maxClipAmmo;
+				if (ReloadSound != NULL) {
+					UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+				}
 			}
 			else {
-				Weapon->clipAmmo += Weapon -> totalAmmo;
-				Weapon->totalAmmo = 0;
+				Wait = false;
+				GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AGeroiche::True, WeaponComponent->reloadTime, false);
+				WeaponComponent->clipAmmo += WeaponComponent -> totalAmmo;
+				WeaponComponent->totalAmmo = 0;
+				if (ReloadSound != NULL) {
+				UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+				}
 			}
 		}
 	}
+}
+
+void AGeroiche::True() {
+	Wait = true;
 }
 
 

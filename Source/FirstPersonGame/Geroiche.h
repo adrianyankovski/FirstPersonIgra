@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Orujie.h"
+#include "OrujieComponent.h"
 #include "GameFramework/Character.h"
 #include "Geroiche.generated.h"
 
@@ -50,25 +50,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector GunOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-		 AOrujie* Weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponComponent)
+		 UOrujieComponent* WeaponComponent;
 	
 
 protected:
 	void OnFire();
-
 	void SlowTime();
 	void RestoreTime();
 
 	const float TimeDilation = 0.1f;
 	FTimerHandle SlowHandle;
-
+	FTimerHandle FireTimerHandle;
+	bool Wait = true;
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
 	void TurnAtRate(float Rate);
 	void LookAtRate(float Rate);
-
+	void True();
 	void ReloadWeapon();
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
