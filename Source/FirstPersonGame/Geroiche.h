@@ -7,7 +7,6 @@
 #include "GameFramework/Character.h"
 #include "Geroiche.generated.h"
 
-
 UCLASS()
 class FIRSTPERSONGAME_API AGeroiche : public ACharacter
 {
@@ -52,8 +51,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponComponent)
 		 UOrujieComponent* WeaponComponent;
-	
 
+	
 protected:
 	void OnFire();
 	void SlowTime();

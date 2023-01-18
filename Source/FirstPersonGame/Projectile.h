@@ -18,6 +18,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	float slowDown = 0.8f;
 
 public:	
 	// Called every frame
@@ -34,8 +35,5 @@ public:
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult& Hit);
 
-	UPROPERTY(EditAnywhere)
-		float DamageValue = 20.0f;
-
-
+	
 };

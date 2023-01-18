@@ -16,7 +16,7 @@ AProjectile::AProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
-	CollisionSphere->InitSphereRadius(10.0f);
+	CollisionSphere->InitSphereRadius(3.0f);
 
 	RootComponent = CollisionSphere;
 
@@ -53,8 +53,43 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 {
 	AProtivnik* Protivnik = Cast<AProtivnik>(OtherActor);
 	if (Protivnik) {
-		Protivnik->TakeDamageProtivnik(DamageValue);
-		Destroy();
+		if (OtherComp->GetName() == "Head Hitbox") {
+			Protivnik->TakeDamageProtivnik(100.f);
+			Destroy();
+		}
+		else if (OtherComp->GetName() == "Spine Hitbox") {
+			Protivnik->TakeDamageProtivnik(40.f);
+			Destroy();
+		}
+		else if (OtherComp->GetName() == "LeftLeg HitBox") {
+			Protivnik->TakeDamageProtivnik(20.f);
+			Protivnik->SetSpeed(Protivnik->GetSpeed() * slowDown);
+			Destroy();
+		}
+		else if (OtherComp->GetName() == "RightLeg HitBox") {
+			Protivnik->TakeDamageProtivnik(30.f);
+			Protivnik->SetSpeed(Protivnik->GetSpeed() * slowDown);
+			Destroy();
+		}
+		else if (OtherComp->GetName() == "RightForeArm HitBox") {
+			Protivnik->TakeDamageProtivnik(20.f);
+			Destroy();
+		}
+		else if (OtherComp->GetName() == "LeftForeArm HitBox") {
+			Protivnik->TakeDamageProtivnik(20.f);
+			Destroy();
+		}
+		else if (OtherComp->GetName() == "RightHand HitBox") {
+			Protivnik->TakeDamageProtivnik(10.f);
+			Destroy();
+		}
+		else if (OtherComp->GetName() == "LeftHand HitBox") {
+			Protivnik->TakeDamageProtivnik(10.f);
+			Destroy();
+		}
+
 	}
+
 }
+
 

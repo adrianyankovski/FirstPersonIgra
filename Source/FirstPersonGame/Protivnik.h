@@ -34,8 +34,6 @@ public:
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult& Hit);
 
-	void ApplyDamage();
-
 	UPROPERTY(VisibleDefaultsOnly, Category = Enemy)
 		class UAIPerceptionComponent* AIPerComp;
 
@@ -62,6 +60,30 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 		float MovementSpeed;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* HeadHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* SpineHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* LeftLegHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* RightLegHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* RightHandHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* RightForeArmHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* LeftHandHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Hitboxes")
+		UBoxComponent* LeftForeArmHitbox;
+
 	void SetNewRotation(FVector TargetPosition, FVector CurrentPosition);
 
 	bool BackToBaseLocation;
@@ -79,6 +101,7 @@ public:
 
 public:
 	void TakeDamageProtivnik(float DamageAmount);
-	
+	void SetSpeed(float speed);
+	float GetSpeed();
 
 };

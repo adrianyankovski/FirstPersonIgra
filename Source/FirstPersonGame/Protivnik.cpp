@@ -33,10 +33,34 @@ AProtivnik::AProtivnik()
 	AIPerComp->SetDominantSense(SightConfig->GetSenseImplementation());
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &AProtivnik::OnSensed);
 	
-
-	CurrentVelocity = FVector::ZeroVector;
 	MovementSpeed = 375.f;
+	CurrentVelocity = FVector::ZeroVector;
 
+	HeadHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Head Hitbox"));
+	HeadHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "Head");
+
+	SpineHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Spine Hitbox"));
+	SpineHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "Spine");
+
+	LeftLegHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftLeg Hitbox"));
+	LeftLegHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "LeftLeg");
+
+	RightLegHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightLeg Hitbox"));
+	RightLegHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "RightLeg");
+
+	RightHandHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHand Hitbox"));
+	RightHandHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "RightHandIndex2");
+
+	RightForeArmHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightForeArm Hitbox"));
+	RightForeArmHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "RightForeArm");
+
+	LeftHandHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHand Hitbox"));
+	LeftHandHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "LeftHandIndex2");
+
+	LeftForeArmHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftForeArm Hitbox"));
+	LeftForeArmHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "LeftForeArm");
+
+	
 	DistanceSquared = BIG_NUMBER;
 
 }
@@ -45,7 +69,6 @@ AProtivnik::AProtivnik()
 void AProtivnik::BeginPlay()
 {
 	Super::BeginPlay();
-
 	DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &AProtivnik::OnHit);
 	BaseLocation = this->GetActorLocation();
 }
@@ -55,7 +78,7 @@ void AProtivnik::BeginPlay()
 void AProtivnik::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+	SetSpeed(MovementSpeed);
 
 	if (!CurrentVelocity.IsZero())
 	{
@@ -184,6 +207,16 @@ void AProtivnik::TakeDamageProtivnik(float DamageAmount)
 	if (Health <= 0.0f) {
 		Destroy();
 	}
+}
+
+void AProtivnik::SetSpeed(float speed)
+{
+	MovementSpeed = speed;
+}
+
+float AProtivnik::GetSpeed()
+{
+	return MovementSpeed;
 }
 
 
