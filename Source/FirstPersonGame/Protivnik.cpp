@@ -7,6 +7,7 @@
 #include "Geroiche.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "TimerManager.h"
 
 // Sets default values
 AProtivnik::AProtivnik()
@@ -31,9 +32,10 @@ AProtivnik::AProtivnik()
 	AIPerComp->ConfigureSense(*SightConfig);
 	AIPerComp->SetDominantSense(SightConfig->GetSenseImplementation());
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &AProtivnik::OnSensed);
+	
 
 	CurrentVelocity = FVector::ZeroVector;
-	MovementSpeed = 375.0f;
+	MovementSpeed = 375.f;
 
 	DistanceSquared = BIG_NUMBER;
 
@@ -45,7 +47,6 @@ void AProtivnik::BeginPlay()
 	Super::BeginPlay();
 
 	DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &AProtivnik::OnHit);
-	
 	BaseLocation = this->GetActorLocation();
 }
 
@@ -54,6 +55,8 @@ void AProtivnik::BeginPlay()
 void AProtivnik::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+
 	if (!CurrentVelocity.IsZero())
 	{
 		NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
@@ -73,6 +76,7 @@ void AProtivnik::Tick(float DeltaTime)
 			}
 
 		}
+
 		else
 		{
 			TimeSinceLastSeen += DeltaTime;
@@ -87,6 +91,8 @@ void AProtivnik::Tick(float DeltaTime)
 				SetNewRotation(BaseLocation, GetActorLocation());
 			}
 		}
+
+
 		SetActorLocation(NewLocation);
 	}
 }
@@ -98,11 +104,14 @@ void AProtivnik::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
-void AProtivnik::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+void AProtivnik::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
+	AGeroiche* Geroiche = Cast<AGeroiche>(OtherActor);
+	
+	if (Geroiche) {
+		Geroiche->TakeDamageGeroiche(DamageValue);
+	}
 }
-
 
 void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 {
@@ -153,6 +162,7 @@ void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 	}
 }
 
+
 void AProtivnik::SetNewRotation(FVector TargetPosition, FVector CurrentPosition)
 {
 
@@ -167,8 +177,16 @@ void AProtivnik::SetNewRotation(FVector TargetPosition, FVector CurrentPosition)
 
 }
 
-void AProtivnik::DealDamage(float DamageAmount)
+void AProtivnik::TakeDamageProtivnik(float DamageAmount)
 {
+	Health -= DamageAmount;
+
+	if (Health <= 0.0f) {
+		Destroy();
+	}
 }
+
+
+
 
 

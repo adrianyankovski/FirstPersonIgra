@@ -203,6 +203,15 @@ void AGeroiche::ReloadWeapon()
 	}
 }
 
+void AGeroiche::TakeDamageGeroiche(float DamageAmount)
+{
+	Health -= DamageAmount;
+	
+	if (Health <= 0.0f) {
+		Destroy();
+	}
+}
+
 void AGeroiche::True() {
 	Wait = true;
 }

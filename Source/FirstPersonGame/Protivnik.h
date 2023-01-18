@@ -34,6 +34,8 @@ public:
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult& Hit);
 
+	void ApplyDamage();
+
 	UPROPERTY(VisibleDefaultsOnly, Category = Enemy)
 		class UAIPerceptionComponent* AIPerComp;
 
@@ -63,6 +65,7 @@ public:
 	void SetNewRotation(FVector TargetPosition, FVector CurrentPosition);
 
 	bool BackToBaseLocation;
+	FTimerHandle CheckTimerHandle;
 	FVector NewLocation;
 	FVector LastPlayerSeenLocation;
 
@@ -75,6 +78,7 @@ public:
 		float DamageValue = 5.0f;
 
 public:
-	void DealDamage(float DamageAmount);
+	void TakeDamageProtivnik(float DamageAmount);
+	
 
 };

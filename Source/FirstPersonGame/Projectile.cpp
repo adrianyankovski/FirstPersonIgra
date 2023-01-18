@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Protivnik.h"
 
 //#include "Enemy.h"
 
@@ -50,5 +51,10 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
+	AProtivnik* Protivnik = Cast<AProtivnik>(OtherActor);
+	if (Protivnik) {
+		Protivnik->TakeDamageProtivnik(DamageValue);
+		Destroy();
+	}
 }
 
