@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector GunOffset;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		//FRotator GunOffset2;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponComponent)
 		 UOrujieComponent* WeaponComponent;
 

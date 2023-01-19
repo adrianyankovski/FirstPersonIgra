@@ -85,7 +85,7 @@ public:
 		UBoxComponent* LeftForeArmHitbox;
 
 	void SetNewRotation(FVector TargetPosition, FVector CurrentPosition);
-
+	float RememberDamage;
 	bool BackToBaseLocation;
 	FTimerHandle CheckTimerHandle;
 	FVector NewLocation;
@@ -97,11 +97,14 @@ public:
 		float Health = 100.0f;
 
 	UPROPERTY(EditAnywhere)
-		float DamageValue = 5.0f;
+		float DamageValue;
 
 public:
 	void TakeDamageProtivnik(float DamageAmount);
 	void SetSpeed(float speed);
 	float GetSpeed();
+	float GetDamage();
+	void SetDamage(float value);
+	void RestoreSpeed();
 
 };

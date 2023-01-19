@@ -47,9 +47,10 @@ AGeroiche::AGeroiche()
 
 	MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle Location"));
 	MuzzleLocation->SetupAttachment(GunMesh);
-	MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+	//MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
-	GunOffset = FVector(100.0f, 0.0f, 10.0f);
+	GunOffset = FVector(100.0f, -17.0f, 15.0f);
+	//GunOffset2 = FRotator(0.f,0.f, 10.f);
 	
 
 }
@@ -178,25 +179,27 @@ void AGeroiche::LookAtRate(float Rate)
 void AGeroiche::ReloadWeapon()
 {
 	if (WeaponComponent) {
+		if (WeaponComponent->totalAmmo > 0) {
 
-		if (WeaponComponent->clipAmmo != WeaponComponent->maxClipAmmo) {
+			if (WeaponComponent->clipAmmo != WeaponComponent->maxClipAmmo) {
 
-			if (WeaponComponent->totalAmmo - (WeaponComponent->maxClipAmmo - WeaponComponent->clipAmmo) >= 0) {
-				Wait = false;
-				GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AGeroiche::True, WeaponComponent->reloadTime, false);
-				WeaponComponent->totalAmmo -= (WeaponComponent->maxClipAmmo - WeaponComponent->clipAmmo);
-				WeaponComponent->clipAmmo = WeaponComponent->maxClipAmmo;
-				if (ReloadSound != NULL) {
-					UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+				if (WeaponComponent->totalAmmo - (WeaponComponent->maxClipAmmo - WeaponComponent->clipAmmo) >= 0) {
+					Wait = false;
+					GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AGeroiche::True, WeaponComponent->reloadTime, false);
+					WeaponComponent->totalAmmo -= (WeaponComponent->maxClipAmmo - WeaponComponent->clipAmmo);
+					WeaponComponent->clipAmmo = WeaponComponent->maxClipAmmo;
+					if (ReloadSound != NULL) {
+						UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+					}
 				}
-			}
-			else {
-				Wait = false;
-				GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AGeroiche::True, WeaponComponent->reloadTime, false);
-				WeaponComponent->clipAmmo += WeaponComponent -> totalAmmo;
-				WeaponComponent->totalAmmo = 0;
-				if (ReloadSound != NULL) {
-				UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+				else {
+					Wait = false;
+					GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AGeroiche::True, WeaponComponent->reloadTime, false);
+					WeaponComponent->clipAmmo += WeaponComponent->totalAmmo;
+					WeaponComponent->totalAmmo = 0;
+					if (ReloadSound != NULL) {
+						UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+					}
 				}
 			}
 		}

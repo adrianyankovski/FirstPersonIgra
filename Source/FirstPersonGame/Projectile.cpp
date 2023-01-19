@@ -7,8 +7,6 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Protivnik.h"
 
-//#include "Enemy.h"
-
 // Sets default values
 AProjectile::AProjectile()
 {
@@ -62,7 +60,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 			Destroy();
 		}
 		else if (OtherComp->GetName() == "LeftLeg HitBox") {
-			Protivnik->TakeDamageProtivnik(20.f);
+			Protivnik->TakeDamageProtivnik(30.f);
 			Protivnik->SetSpeed(Protivnik->GetSpeed() * slowDown);
 			Destroy();
 		}
@@ -73,18 +71,26 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		}
 		else if (OtherComp->GetName() == "RightForeArm HitBox") {
 			Protivnik->TakeDamageProtivnik(20.f);
+			Protivnik->SetDamage(Protivnik->GetSpeed() -1);
+			Protivnik->RememberDamage -= 1;
 			Destroy();
 		}
 		else if (OtherComp->GetName() == "LeftForeArm HitBox") {
 			Protivnik->TakeDamageProtivnik(20.f);
+			Protivnik->SetDamage(Protivnik->GetSpeed() - 1);
+			Protivnik->RememberDamage -= 1;
 			Destroy();
 		}
 		else if (OtherComp->GetName() == "RightHand HitBox") {
 			Protivnik->TakeDamageProtivnik(10.f);
+			Protivnik->SetDamage(Protivnik->GetSpeed() -1);
+			Protivnik->RememberDamage -= 1;
 			Destroy();
 		}
 		else if (OtherComp->GetName() == "LeftHand HitBox") {
 			Protivnik->TakeDamageProtivnik(10.f);
+			Protivnik->SetDamage(Protivnik->GetSpeed() -1);
+			Protivnik->RememberDamage -= 1;
 			Destroy();
 		}
 

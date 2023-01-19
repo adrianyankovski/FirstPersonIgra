@@ -34,6 +34,8 @@ AProtivnik::AProtivnik()
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &AProtivnik::OnSensed);
 	
 	MovementSpeed = 375.f;
+	DamageValue = 5.0f;
+	RememberDamage = 5.0f;
 	CurrentVelocity = FVector::ZeroVector;
 
 	HeadHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Head Hitbox"));
@@ -78,8 +80,14 @@ void AProtivnik::BeginPlay()
 void AProtivnik::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SetSpeed(MovementSpeed);
+	
+	if (MovementSpeed == 0.f) {
+		DamageValue = 0;
 
+	}
+	else {
+		DamageValue = RememberDamage;
+	}
 	if (!CurrentVelocity.IsZero())
 	{
 		NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
@@ -132,8 +140,14 @@ void AProtivnik::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 	AGeroiche* Geroiche = Cast<AGeroiche>(OtherActor);
 	
 	if (Geroiche) {
+		MovementSpeed = 0.f;
 		Geroiche->TakeDamageGeroiche(DamageValue);
+		GetWorldTimerManager().SetTimer(CheckTimerHandle, this, &AProtivnik::RestoreSpeed, 0.5f, false);
+
 	}
+	
+
+	
 }
 
 void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
@@ -217,6 +231,23 @@ void AProtivnik::SetSpeed(float speed)
 float AProtivnik::GetSpeed()
 {
 	return MovementSpeed;
+}
+
+float AProtivnik::GetDamage()
+{
+	return DamageValue;
+}
+
+
+
+void AProtivnik::SetDamage(float value)
+{
+	DamageValue = value;
+}
+
+void AProtivnik::RestoreSpeed()
+{
+	MovementSpeed = 375;
 }
 
 
