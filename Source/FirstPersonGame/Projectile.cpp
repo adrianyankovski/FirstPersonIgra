@@ -10,7 +10,7 @@
 // Sets default values
 AProjectile::AProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
@@ -37,7 +37,7 @@ void AProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnHit);
-	
+
 }
 
 // Called every frame
@@ -71,7 +71,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		}
 		else if (OtherComp->GetName() == "RightForeArm HitBox") {
 			Protivnik->TakeDamageProtivnik(20.f);
-			Protivnik->SetDamage(Protivnik->GetSpeed() -1);
+			Protivnik->SetDamage(Protivnik->GetSpeed() - 1);
 			Protivnik->RememberDamage -= 1;
 			Destroy();
 		}
@@ -83,13 +83,13 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		}
 		else if (OtherComp->GetName() == "RightHand HitBox") {
 			Protivnik->TakeDamageProtivnik(10.f);
-			Protivnik->SetDamage(Protivnik->GetSpeed() -1);
+			Protivnik->SetDamage(Protivnik->GetSpeed() - 1);
 			Protivnik->RememberDamage -= 1;
 			Destroy();
 		}
 		else if (OtherComp->GetName() == "LeftHand HitBox") {
 			Protivnik->TakeDamageProtivnik(10.f);
-			Protivnik->SetDamage(Protivnik->GetSpeed() -1);
+			Protivnik->SetDamage(Protivnik->GetSpeed() - 1);
 			Protivnik->RememberDamage -= 1;
 			Destroy();
 		}

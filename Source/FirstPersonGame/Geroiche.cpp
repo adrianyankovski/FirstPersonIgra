@@ -1,3 +1,4 @@
+
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -18,7 +19,7 @@
 // Sets default values
 AGeroiche::AGeroiche()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GetCapsuleComponent()->InitCapsuleSize(40.0f, 95.0f);
 
@@ -33,7 +34,7 @@ AGeroiche::AGeroiche()
 
 	HandsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
 
-	HandsMesh ->SetOnlyOwnerSee(true);
+	HandsMesh->SetOnlyOwnerSee(true);
 	HandsMesh->SetupAttachment(FirstPersonCamera);
 	HandsMesh->bCastDynamicShadow = false;
 	HandsMesh->CastShadow = false;
@@ -51,7 +52,7 @@ AGeroiche::AGeroiche()
 
 	GunOffset = FVector(100.0f, -17.0f, 15.0f);
 	//GunOffset2 = FRotator(0.f,0.f, 10.f);
-	
+
 
 }
 
@@ -67,7 +68,7 @@ void AGeroiche::BeginPlay()
 	World = GetWorld();
 	AnimInstance = HandsMesh->GetAnimInstance();
 
-	
+
 }
 
 // Called every frame
@@ -81,7 +82,7 @@ void AGeroiche::Tick(float DeltaTime)
 void AGeroiche::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Slow", IE_Pressed, this, &AGeroiche::SlowTime);
@@ -206,17 +207,24 @@ void AGeroiche::ReloadWeapon()
 	}
 }
 
-void AGeroiche::TakeDamageGeroiche(float DamageAmount)
-{
-	Health -= DamageAmount;
-	
-	if (Health <= 0.0f) {
-		Destroy();
-	}
-}
-
 void AGeroiche::True() {
 	Wait = true;
 }
+
+void AGeroiche::TakeDamageGeroiche(float DamageAmount)
+{
+	Health -= DamageAmount;
+
+	if (Health <= 0.0f) {
+		Destroy();
+		AGameModeFPS* MyGameMode =
+			Cast<AGameModeFPS>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (MyGameMode) {
+			MyGameMode->RestartGame(true);
+		}
+	}
+}
+
+
 
 

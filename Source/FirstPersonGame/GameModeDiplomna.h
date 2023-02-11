@@ -10,8 +10,23 @@
  * 
  */
 UCLASS()
-class FIRSTPERSONGAME_API AGameModeDiplomna : public AGameMode
+class FIRSTPERSONGAME_API AGameModeFPS : public AGameMode
 {
 	GENERATED_BODY()
+
+public:
+
+	void RestartGame(bool Reset);
+
+private:
+
+	void ResetLevel();
+
+public:
+
+	void BeginPlay() override;
+
+
+
 
 };

@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -53,17 +53,20 @@ public:
 		//FRotator GunOffset2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponComponent)
-		 UOrujieComponent* WeaponComponent;
+		UOrujieComponent* WeaponComponent;
 
-	
+
 protected:
-	void OnFire();
-	void SlowTime();
-	void RestoreTime();
 
 	const float TimeDilation = 0.1f;
 	FTimerHandle SlowHandle;
 	FTimerHandle FireTimerHandle;
+
+	void OnFire();
+	void SlowTime();
+	void RestoreTime();
+
+	
 	bool Wait = true;
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -72,11 +75,11 @@ protected:
 	void LookAtRate(float Rate);
 	void True();
 	void ReloadWeapon();
-	
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 		void TriggerOutOfAmmoPopUp();
 
-	
+
 
 
 public:
@@ -109,7 +112,7 @@ public:
 
 public:
 	void TakeDamageGeroiche(float DamageAmount);
-	
+
 
 
 

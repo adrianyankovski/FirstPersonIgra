@@ -12,7 +12,7 @@
 // Sets default values
 AProtivnik::AProtivnik()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	DamageCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Damage Collision"));
@@ -32,7 +32,7 @@ AProtivnik::AProtivnik()
 	AIPerComp->ConfigureSense(*SightConfig);
 	AIPerComp->SetDominantSense(SightConfig->GetSenseImplementation());
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &AProtivnik::OnSensed);
-	
+
 	MovementSpeed = 375.f;
 	DamageValue = 5.0f;
 	RememberDamage = 5.0f;
@@ -62,7 +62,7 @@ AProtivnik::AProtivnik()
 	LeftForeArmHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftForeArm Hitbox"));
 	LeftForeArmHitbox->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "LeftForeArm");
 
-	
+
 	DistanceSquared = BIG_NUMBER;
 
 }
@@ -80,7 +80,7 @@ void AProtivnik::BeginPlay()
 void AProtivnik::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	if (MovementSpeed == 0.f) {
 		DamageValue = 0;
 
@@ -138,22 +138,27 @@ void AProtivnik::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 void AProtivnik::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
 	AGeroiche* Geroiche = Cast<AGeroiche>(OtherActor);
-	
+
 	if (Geroiche) {
 		MovementSpeed = 0.f;
 		Geroiche->TakeDamageGeroiche(DamageValue);
 		GetWorldTimerManager().SetTimer(CheckTimerHandle, this, &AProtivnik::RestoreSpeed, 0.5f, false);
 
 	}
-	
 
-	
+
+
 }
 
 void AProtivnik::OnSensed(const TArray<AActor*>& UpdatedActors)
 {
 	for (int i = 0; i < UpdatedActors.Num(); i++)
 	{
+		if (UpdatedActors[i]->IsA(AProtivnik::StaticClass()))
+		{
+			continue;
+		}
+
 		FActorPerceptionBlueprintInfo Info;
 
 		AIPerComp->GetActorsPerception(UpdatedActors[i], Info);
@@ -248,6 +253,7 @@ void AProtivnik::SetDamage(float value)
 void AProtivnik::RestoreSpeed()
 {
 	MovementSpeed = 375;
+
 }
 
 
