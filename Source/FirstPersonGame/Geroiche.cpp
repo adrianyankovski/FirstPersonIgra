@@ -25,7 +25,9 @@ AGeroiche::AGeroiche()
 
 	TurnRate = 45.0f;
 	LookUpRate = 45.0f;
-
+	XP = 0;
+	PlayerLevel = 1;
+	XPToLevelUp = 2;
 	WeaponComponent = CreateDefaultSubobject<UOrujieComponent>(TEXT("Weapon Data"));
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("First Person Camera"));
 	FirstPersonCamera->SetupAttachment(GetCapsuleComponent());
@@ -204,6 +206,18 @@ void AGeroiche::ReloadWeapon()
 				}
 			}
 		}
+	}
+}
+
+void AGeroiche::LevelUp()
+{
+	if (XP == XPToLevelUp) {
+		XP = 0;
+		XPToLevelUp *= 2;
+		PlayerLevel += 1;
+	}
+	if (PlayerLevel > 1) {
+				
 	}
 }
 

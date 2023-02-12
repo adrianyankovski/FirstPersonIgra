@@ -2,8 +2,9 @@
 
 
 #include "GameModeDiplomna.h"
-
+#include "Engine.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 void AGameModeFPS::BeginPlay()
 {
@@ -18,9 +19,12 @@ void AGameModeFPS::RestartGame(bool Reset)
 	}
 }
 
+
 void AGameModeFPS::ResetLevel()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), "FirstPersonMap");
 }
+
+
 
 

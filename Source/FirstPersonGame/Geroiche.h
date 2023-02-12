@@ -108,10 +108,21 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float Health = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int PlayerLevel;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int XP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int XPToLevelUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float MaxHealth = 100.f;
 
 public:
 	void TakeDamageGeroiche(float DamageAmount);
+	void LevelUp();
 
 
 

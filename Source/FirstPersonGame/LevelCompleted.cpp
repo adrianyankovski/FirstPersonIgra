@@ -2,12 +2,16 @@
 
 
 #include "LevelCompleted.h"
-
+#include "Engine/Engine.h"
+#include "Engine/World.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Geroiche.h"
 #include "GameModeDiplomna.h"
 #include "Kismet/GameplayStatics.h"
+#include "Geroiche.h"
+#include "Protivnik.h"
+#include "OrujieCOmponent.h"
 
 // Sets default values
 ALevelCompleted::ALevelCompleted()
@@ -41,19 +45,43 @@ void ALevelCompleted::Tick(float DeltaTime)
 
 }
 
-void ALevelCompleted::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OTherCOmp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+void ALevelCompleted::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			TArray<AActor*> AllActors;
+			UGameplayStatics::GetAllActorsOfClass(World, AProtivnik::StaticClass(), AllActors);
+			AGeroiche* Char = Cast<AGeroiche>(OtherActor);
+			if (Char)
+			{
+				if (AllActors.Num() <= 0 || (Char->WeaponComponent->totalAmmo == 0 && Char->WeaponComponent->clipAmmo == 0))
+				{
+				
+					AGameModeFPS* MyGameMode = Cast<AGameModeFPS>(UGameplayStatics::GetGameMode(GetWorld()));
+					if (MyGameMode) 
+					{	
+						FString CurrentMapName = GetWorld()->GetMapName();
+						CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+						GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentMapName);
+						if (CurrentMapName.Equals("FirstPersonMap")) {
+							World->ServerTravel("/Game/FirstPerson/Maps/NewMap1");
+						}
+						if (CurrentMapName.Equals("NewMap1")) {
+							World->ServerTravel("/Game/FirstPerson/Maps/NewMap2");
+						}	
+						else
+						{
+						    MyGameMode->RestartGame(true);
+						}
+						
 
-	ACharacter* Char = Cast<ACharacter>(OtherActor);
-
-	if (Char)
-	{
-		AGameModeFPS* MyGameMode =
-			Cast<AGameModeFPS>(UGameplayStatics::GetGameMode(GetWorld()));
-		if (MyGameMode) {
-			MyGameMode->RestartGame(true);
-		}
-	}
-
+					}
+				}
+			
+			}
+		}	
 }
+
+
 

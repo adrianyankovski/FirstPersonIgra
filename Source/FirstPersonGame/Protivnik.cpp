@@ -126,6 +126,8 @@ void AProtivnik::Tick(float DeltaTime)
 
 		SetActorLocation(NewLocation);
 	}
+
+
 }
 
 // Called to bind functionality to input
@@ -224,6 +226,9 @@ void AProtivnik::TakeDamageProtivnik(float DamageAmount)
 	Health -= DamageAmount;
 
 	if (Health <= 0.0f) {
+		AGeroiche* Geroiche = Cast<AGeroiche>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		Geroiche->XP += 1;
+		Geroiche->LevelUp();
 		Destroy();
 	}
 }
