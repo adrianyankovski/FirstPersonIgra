@@ -52,7 +52,7 @@ AGeroiche::AGeroiche()
 	MuzzleLocation->SetupAttachment(GunMesh);
 	//MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
-	GunOffset = FVector(100.0f, -17.0f, 15.0f);
+	GunOffset = FVector(100.0f, 10.0f, 27.0f);
 	//GunOffset2 = FRotator(0.f,0.f, 10.f);
 
 
@@ -62,7 +62,6 @@ AGeroiche::AGeroiche()
 void AGeroiche::BeginPlay()
 {
 	Super::BeginPlay();
-
 	GunMesh->AttachToComponent(HandsMesh,
 		FAttachmentTransformRules::SnapToTargetIncludingScale,
 		TEXT("GripPoint"));
@@ -98,6 +97,7 @@ void AGeroiche::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Turn", this, &AGeroiche::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &AGeroiche::LookAtRate);
 }
+
 void AGeroiche::OnFire()
 {
 
@@ -212,12 +212,22 @@ void AGeroiche::ReloadWeapon()
 void AGeroiche::LevelUp()
 {
 	if (XP == XPToLevelUp) {
-		XP = 0;
-		XPToLevelUp *= 2;
-		PlayerLevel += 1;
-	}
-	if (PlayerLevel > 1) {
-				
+		UCharacterMovementComponent* GeroicheMovement = GetCharacterMovement();
+		if (GeroicheMovement) {
+			GeroicheMovement->MaxWalkSpeed *= 1.2;
+			XP = 0;
+			XPToLevelUp *= 2;
+			PlayerLevel += 1;
+			if (MaxHealth - Health < 30) {
+				MaxHealth += 20;
+				Health = MaxHealth;
+			}
+			else {
+				MaxHealth += 20;
+				Health += 30;
+			}
+		}
+
 	}
 }
 
