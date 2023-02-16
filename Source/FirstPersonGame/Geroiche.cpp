@@ -14,6 +14,7 @@
 #include "GameModeDiplomna.h"
 #include "TimerManager.h"
 #include "OrujieComponent.h"
+#include "MyGameInstance.h"
 
 
 // Sets default values
@@ -62,13 +63,25 @@ AGeroiche::AGeroiche()
 void AGeroiche::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(this));
+
+	// Retrieve and assign the state variables
+
+		Health = GameInstance->GetHealth();
+		MaxHealth = GameInstance->GetMaxHealth();
+		WeaponComponent->clipAmmo = GameInstance->GetClipAmmo();
+		WeaponComponent->totalAmmo = GameInstance->GetTotalAmmo();
+		XP = GameInstance->GetXP();
+		XPToLevelUp = GameInstance->GetXPToLevelUp();
+		PlayerLevel = GameInstance->GetPlayerLevel();
+	
 	GunMesh->AttachToComponent(HandsMesh,
 		FAttachmentTransformRules::SnapToTargetIncludingScale,
 		TEXT("GripPoint"));
 
 	World = GetWorld();
 	AnimInstance = HandsMesh->GetAnimInstance();
-
 
 }
 

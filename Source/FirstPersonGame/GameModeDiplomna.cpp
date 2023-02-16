@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "MyGameInstance.h"
 
 void AGameModeFPS::BeginPlay()
 {
@@ -19,10 +20,13 @@ void AGameModeFPS::RestartGame(bool Reset)
 	}
 }
 
-
 void AGameModeFPS::ResetLevel()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), "FirstPersonMap");
+	UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (MyGameInstance) {
+		MyGameInstance->Reset();
+	}
 }
 
 

@@ -7,11 +7,12 @@
 #include "GameModeDiplomna.generated.h"
 
 /**
- * 
+ *
  */
-UCLASS()
-class FIRSTPERSONGAME_API AGameModeFPS : public AGameMode
+	UCLASS()
+	class FIRSTPERSONGAME_API AGameModeFPS : public AGameMode
 {
+
 	GENERATED_BODY()
 
 public:
@@ -30,3 +31,4 @@ public:
 
 
 };
+

@@ -11,7 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Geroiche.h"
 #include "Protivnik.h"
-#include "OrujieCOmponent.h"
+#include "OrujieComponent.h"
+#include "MyGameInstance.h"
 
 // Sets default values
 ALevelCompleted::ALevelCompleted()
@@ -59,23 +60,34 @@ void ALevelCompleted::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 				{
 				
 					AGameModeFPS* MyGameMode = Cast<AGameModeFPS>(UGameplayStatics::GetGameMode(GetWorld()));
-					if (MyGameMode) 
-					{	
-						FString CurrentMapName = GetWorld()->GetMapName();
-						CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
-						GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentMapName);
-						if (CurrentMapName.Equals("FirstPersonMap")) {
-							World->ServerTravel("/Game/FirstPerson/Maps/NewMap1");
-						}
-						if (CurrentMapName.Equals("NewMap1")) {
-							World->ServerTravel("/Game/FirstPerson/Maps/NewMap2");
-						}	
-						else
-						{
-						    MyGameMode->RestartGame(true);
-						}
+					if (MyGameMode)
+					{
+						UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+							
+							// access and update the parameter values
+							MyGameInstance->Health = Char->Health;
+							MyGameInstance->MaxHealth = Char->MaxHealth;
+							MyGameInstance->clipAmmo = Char->WeaponComponent->clipAmmo;
+							MyGameInstance->totalAmmo = Char->WeaponComponent->totalAmmo;
+							MyGameInstance->XP = Char->XP;
+							MyGameInstance->XPToLevelUp = Char->XPToLevelUp;
+							MyGameInstance->PlayerLevel = Char->PlayerLevel;
 						
 
+							FString CurrentMapName = GetWorld()->GetMapName();
+							CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+							GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentMapName);
+							if (CurrentMapName.Equals("FirstPersonMap")) {
+								World->ServerTravel("/Game/FirstPerson/Maps/NewMap1");
+							}
+							if (CurrentMapName.Equals("NewMap1")) {
+								World->ServerTravel("/Game/FirstPerson/Maps/NewMap2");
+							}
+							else
+							{
+								MyGameMode->RestartGame(true);
+							}
+						
 					}
 				}
 			
