@@ -14,38 +14,33 @@ class FIRSTPERSONGAME_API UMyGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-		float Health = 100.f;
+		float Health ;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-		float MaxHealth = 100.f;
+		float MaxHealth ;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-		int clipAmmo = 12;
+		int clipAmmo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-		int totalAmmo = 64;
+		int totalAmmo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-		int XP = 0;
+		int XP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-		int XPToLevelUp = 2;
+		int XPToLevelUp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-		int PlayerLevel = 1;
+		int PlayerLevel;
 	
 	
 
 public:
-	float GetHealth() const;
-	float GetMaxHealth() const;
-	int GetClipAmmo() const;
-	int GetTotalAmmo() const;
-	int GetXP() const;
-	int GetXPToLevelUp() const;
-	int GetPlayerLevel() const;
 	void Reset();
 
 };

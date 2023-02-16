@@ -62,18 +62,16 @@ void ALevelCompleted::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 					AGameModeFPS* MyGameMode = Cast<AGameModeFPS>(UGameplayStatics::GetGameMode(GetWorld()));
 					if (MyGameMode)
 					{
-						UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-							
-							// access and update the parameter values
-							MyGameInstance->Health = Char->Health;
-							MyGameInstance->MaxHealth = Char->MaxHealth;
-							MyGameInstance->clipAmmo = Char->WeaponComponent->clipAmmo;
-							MyGameInstance->totalAmmo = Char->WeaponComponent->totalAmmo;
-							MyGameInstance->XP = Char->XP;
-							MyGameInstance->XPToLevelUp = Char->XPToLevelUp;
-							MyGameInstance->PlayerLevel = Char->PlayerLevel;
-						
-
+						UMyGameInstance* GameInstance1 = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+						if (GameInstance1) {
+							GameInstance1->Health = Char->Health;
+							GameInstance1->MaxHealth = Char->MaxHealth;
+							GameInstance1->clipAmmo = Char->WeaponComponent->clipAmmo;
+							GameInstance1->totalAmmo = Char->WeaponComponent->totalAmmo;
+							GameInstance1->XP = Char->XP;
+							GameInstance1->XPToLevelUp = Char->XPToLevelUp;
+							GameInstance1->PlayerLevel = Char->PlayerLevel;
+						}
 							FString CurrentMapName = GetWorld()->GetMapName();
 							CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 							GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentMapName);
