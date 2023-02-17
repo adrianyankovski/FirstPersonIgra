@@ -16,7 +16,8 @@
 	GENERATED_BODY()
 
 public:
-
+	void Level2(bool Reset);
+	void Level3(bool Reset);
 	void RestartGame(bool Reset);
 
 private:

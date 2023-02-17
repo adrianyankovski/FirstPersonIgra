@@ -15,4 +15,5 @@ void UMyGameInstance::Reset()
     XP = 0;
     XPToLevelUp = 2;
     PlayerLevel = 1;
+    MaxWalkSpeed = 600;
 }

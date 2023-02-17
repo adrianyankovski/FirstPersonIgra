@@ -12,6 +12,16 @@ void AGameModeFPS::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AGameModeFPS::Level2(bool Reset)
+{
+	UGameplayStatics::OpenLevel(GetWorld(), "NewMap1");
+}
+
+void AGameModeFPS::Level3(bool Reset)
+{
+	UGameplayStatics::OpenLevel(GetWorld(), "NewMap2");
+}
+
 void AGameModeFPS::RestartGame(bool Reset)
 {
 	if (Reset)
@@ -22,7 +32,7 @@ void AGameModeFPS::RestartGame(bool Reset)
 
 void AGameModeFPS::ResetLevel()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), "FirstPersonMap");
+	UGameplayStatics::OpenLevel(GetWorld(), "NewMap");
 	UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (MyGameInstance) {
 		MyGameInstance->Reset();

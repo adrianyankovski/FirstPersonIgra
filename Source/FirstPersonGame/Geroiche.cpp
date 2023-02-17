@@ -53,7 +53,7 @@ AGeroiche::AGeroiche()
 	MuzzleLocation->SetupAttachment(GunMesh);
 	//MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
-	GunOffset = FVector(100.0f, 10.0f, 27.0f);
+	GunOffset = FVector(50.0f, 5.0f, 18.0f);
 	//GunOffset2 = FRotator(0.f,0.f, 10.f);
 
 
@@ -66,6 +66,7 @@ void AGeroiche::BeginPlay()
 
 	FString CurrentMapName = GetWorld()->GetMapName();
 	CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+	UCharacterMovementComponent* GeroicheMovement = GetCharacterMovement();
 	UMyGameInstance* GameInstance1 = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	if (GameInstance1 && !CurrentMapName.Equals("FirstPersonMap")) {
@@ -76,7 +77,10 @@ void AGeroiche::BeginPlay()
 		XP = GameInstance1->XP;
 		XPToLevelUp = GameInstance1->XPToLevelUp;
 		PlayerLevel = GameInstance1->PlayerLevel;
+		GeroicheMovement->MaxWalkSpeed = GameInstance1->MaxWalkSpeed;
 	}
+
+
 	GunMesh->AttachToComponent(HandsMesh,
 		FAttachmentTransformRules::SnapToTargetIncludingScale,
 		TEXT("GripPoint"));

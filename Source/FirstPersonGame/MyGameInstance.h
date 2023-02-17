@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
 		int PlayerLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
+		float MaxWalkSpeed;
 	
 	
 

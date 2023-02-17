@@ -62,6 +62,7 @@ void ALevelCompleted::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 					AGameModeFPS* MyGameMode = Cast<AGameModeFPS>(UGameplayStatics::GetGameMode(GetWorld()));
 					if (MyGameMode)
 					{
+
 						UMyGameInstance* GameInstance1 = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 						if (GameInstance1) {
 							GameInstance1->Health = Char->Health;
@@ -71,18 +72,20 @@ void ALevelCompleted::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 							GameInstance1->XP = Char->XP;
 							GameInstance1->XPToLevelUp = Char->XPToLevelUp;
 							GameInstance1->PlayerLevel = Char->PlayerLevel;
+							GameInstance1->MaxWalkSpeed = Char->GetCharacterMovement()->MaxWalkSpeed;
 						}
+
+
 							FString CurrentMapName = GetWorld()->GetMapName();
 							CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 							GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentMapName);
 							if (CurrentMapName.Equals("FirstPersonMap")) {
-								World->ServerTravel("/Game/FirstPerson/Maps/NewMap1");
+								MyGameMode->Level2(true);
 							}
 							if (CurrentMapName.Equals("NewMap1")) {
-								World->ServerTravel("/Game/FirstPerson/Maps/NewMap2");
+								MyGameMode->Level3(true);
 							}
-							else
-							{
+							if(CurrentMapName.Equals("NewMap2")){
 								MyGameMode->RestartGame(true);
 							}
 						
