@@ -13,7 +13,7 @@ UOrujieComponent::UOrujieComponent()
 
 	maxTotalAmmo = 100;
 	maxClipAmmo = 12;
-	totalAmmo = 64;
+	totalAmmo = 100;
 	clipAmmo = 12;
 	reloadTime = 1.0f;
 	// ...

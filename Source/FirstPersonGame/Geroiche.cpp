@@ -51,10 +51,6 @@ AGeroiche::AGeroiche()
 
 	MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle Location"));
 	MuzzleLocation->SetupAttachment(GunMesh);
-	//MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
-
-	GunOffset = FVector(50.0f, 5.0f, 18.0f);
-	//GunOffset2 = FRotator(0.f,0.f, 10.f);
 
 
 }
@@ -118,42 +114,41 @@ void AGeroiche::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AGeroiche::OnFire()
 {
-
-	if (World != NULL) {
+	if (World != nullptr) {
 		if (Wait) {
-			if (WeaponComponent) {
-				if (WeaponComponent->clipAmmo > 0) {
-					SpawnRotation = GetControlRotation();
+			if (WeaponComponent && WeaponComponent->clipAmmo > 0) {
+				FVector SpawnLocation1;
+				FRotator SpawnRotation1;
+				if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
+					FVector CameraLocation;
+					FRotator CameraRotation;
+					PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 
-					SpawnLocation = ((MuzzleLocation != nullptr) ?
-						MuzzleLocation->GetComponentLocation() :
-						GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-					FActorSpawnParameters ActorSpawnParams;
-					ActorSpawnParams.SpawnCollisionHandlingOverride =
-						ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-					World->SpawnActor<AProjectile>(Projectile,
-						SpawnLocation, SpawnRotation, ActorSpawnParams);
-
-					if (FireSound != NULL) {
-						UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-
-					}
-
-					if (FireAnimation != NULL && AnimInstance != NULL)
-					{
-						AnimInstance->Montage_Play(FireAnimation, 0.3f);
-					}
-
-					WeaponComponent->clipAmmo -= 1;
+					const FVector RightVector = CameraRotation.RotateVector(FVector::RightVector);
+					SpawnLocation1 = CameraLocation + CameraRotation.Vector() * 100.f; 
+					SpawnRotation1= CameraRotation; 
 				}
-				else {
-					if (EmptyMagazineSound != NULL) {
-						UGameplayStatics::PlaySoundAtLocation(this, EmptyMagazineSound, GetActorLocation());
-					}
-					TriggerOutOfAmmoPopUp();
+
+				FActorSpawnParameters ActorSpawnParams;
+				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+				World->SpawnActor<AProjectile>(Projectile, SpawnLocation1, SpawnRotation1, ActorSpawnParams);
+
+				if (FireSound) {
+					UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 				}
+
+				if (FireAnimation && AnimInstance) {
+					AnimInstance->Montage_Play(FireAnimation, 0.3f);
+				}
+
+				WeaponComponent->clipAmmo--;
+			}
+			else {
+				if (EmptyMagazineSound) {
+					UGameplayStatics::PlaySoundAtLocation(this, EmptyMagazineSound, GetActorLocation());
+				}
+				TriggerOutOfAmmoPopUp();
 			}
 		}
 	}

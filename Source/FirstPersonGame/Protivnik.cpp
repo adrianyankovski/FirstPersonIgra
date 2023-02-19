@@ -34,8 +34,8 @@ AProtivnik::AProtivnik()
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &AProtivnik::OnSensed);
 
 	MovementSpeed = 375.f;
-	DamageValue = 5.0f;
-	RememberDamage = 5.0f;
+	DamageValue = 20.0f;
+	RememberDamage = 20.0f;
 	CurrentVelocity = FVector::ZeroVector;
 
 	HeadHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Head Hitbox"));
@@ -86,7 +86,12 @@ void AProtivnik::Tick(float DeltaTime)
 
 	}
 	else {
-		DamageValue = RememberDamage;
+		if (RememberDamage >= 5) {
+			DamageValue = RememberDamage;
+		}
+		else {
+			DamageValue = 5;
+		}
 	}
 	if (!CurrentVelocity.IsZero())
 	{

@@ -11,7 +11,7 @@ void UMyGameInstance::Reset()
     Health = 100.0f;
     MaxHealth = 100.0f;
     clipAmmo = 12;
-    totalAmmo = 64;
+    totalAmmo = 100;
     XP = 0;
     XPToLevelUp = 2;
     PlayerLevel = 1;
